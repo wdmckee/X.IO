@@ -15,12 +15,12 @@ namespace X.IO.Arithmetic
     public class ArithmeticInterpreter
     {
 
-        
+        public Dictionary<string, List<double>> _externalData = new Dictionary<string, List<double>>();
         public List<Arithmetic_ActionData> ActionList = new List<Arithmetic_ActionData>();
         OpStack _opStack = new OpStack();
-        OpStack _delayedfnStack = new OpStack();
+        //OpStack _delayedfnStack = new OpStack();
         OpStack _resultStack = new OpStack();
-        Functions extern_fn = new Functions();
+        //Functions extern_fn = new Functions();
         InterpreterPropertyHelper iph;
         bool isError = false;
 
@@ -34,7 +34,11 @@ namespace X.IO.Arithmetic
 
         public ArithmeticInterpreter()
         {
-           
+
+        }
+        public ArithmeticInterpreter(ref Dictionary<string, List<double>> ExternalData)
+        {
+            _externalData = ExternalData;
         }
         public void Result(dynamic result)
         {
@@ -151,7 +155,37 @@ namespace X.IO.Arithmetic
                 goto top;
 
             }
-            #endregion           
+            #endregion
+            #region external-array
+            if (_result is external_array)
+            {
+                var _temp = _result;
+                dynamic _value;
+
+
+
+
+                if (_result.word != null)
+                {
+                    _value = _result.word.expression;
+
+                    result = _result;
+                    _result = null;
+                    _resultStack.ReplaceBottom(_result);
+                   // _opStack.Push("end");
+                    _opStack.Push(_value);
+                    //_opStack.Push("external");
+                    _resultStack.Push(_value);
+                    goto top;
+                }
+
+                _result = _temp;
+
+
+                result = _resultStack.PopBottomPeek();
+                goto top;
+            }
+            #endregion
             #region conditional
             if (_result is conditional)
             {
@@ -182,11 +216,11 @@ namespace X.IO.Arithmetic
             #endregion
             #endregion
 
-
+           
 
             #region signed-function
-            // TREATING THIS AS ATOMIC LEVEL
-            if (_result is signed_function)
+                // TREATING THIS AS ATOMIC LEVEL
+                if (_result is signed_function)
             {
                 var _temp = _result;
 
@@ -259,9 +293,22 @@ namespace X.IO.Arithmetic
                 _result = _temp;
 
 
+                if (_result.external_array != null)
+                {
+
+                    result = _result.external_array;
+                    _result.external_array = null;
+
+                    _resultStack.ReplaceBottom(_result);
+                    _resultStack.Push(result);
+
+                    goto top;
+                }
+
+                _result = _temp;
 
 
-                
+
                 result = _resultStack.PopBottomPeek();
                 
                 goto top;
@@ -712,7 +759,7 @@ namespace X.IO.Arithmetic
 
             
 
-            iph = new InterpreterPropertyHelper(_opStack);
+            iph = new InterpreterPropertyHelper(_opStack, _externalData);
             iph.StatusEvaluations();
       
             if(!iph.isError)
@@ -1231,9 +1278,50 @@ namespace X.IO.Arithmetic
         {
             var _param1 = ReturnParameter(1);
             var _param2 = ReturnParameter(2);
-            var _value = _param1.FindIndex(x => x == 5)+1;           
+            _param1.Reverse();
+            var _value = _param1.FindIndex(x => x == _param2[0]) +1;           
             _opStack.PushAt(iph.NextTuplePush, _value);
 
+        }
+        private void CalculateMax()
+        {
+            if (iph.li_paramsLoc.Count() == 1)
+            {
+                var _value = GetCumulative(iph.li_params, "max");
+                _opStack.PushAt(iph.NextTuplePush, _value);
+            }
+        }
+        private void CalculateMin()
+        {
+            if (iph.li_paramsLoc.Count() == 1)
+            {
+                var _value = GetCumulative(iph.li_params, "min");
+                _opStack.PushAt(iph.NextTuplePush, _value);
+            }
+        }
+        private void CalculateCount()
+        {
+            if (iph.li_paramsLoc.Count() == 1)
+            {
+                var _value = GetCumulative(iph.li_params, "count");
+                _opStack.PushAt(iph.NextTuplePush, _value);
+            }
+        }
+        private void CalculateSum()
+        {
+            if (iph.li_paramsLoc.Count() == 1)
+            {
+                var _value = GetCumulative(iph.li_params, "+");
+                _opStack.PushAt(iph.NextTuplePush, _value);
+            }
+        }
+        private void CalculateAvg()
+        {
+            if (iph.li_paramsLoc.Count() == 1)
+            {
+                var _value = GetCumulative(iph.li_params, "+") / GetCumulative(iph.li_params, "count");
+                _opStack.PushAt(iph.NextTuplePush, _value);
+            }
         }
 
         // OUTPUT MULTI-VALUE
@@ -1283,46 +1371,6 @@ namespace X.IO.Arithmetic
             if (iph.li_paramsLoc.Count() == 1)
             {
                 PushDistinct(iph.NextTuplePush, iph.li_params);
-            }
-        }
-        private void CalculateMax()
-        {
-            if (iph.li_paramsLoc.Count() == 1)
-            {
-                var _value = GetCumulative(iph.li_params, "max");
-                _opStack.PushAt(iph.NextTuplePush, _value);
-            }
-        }
-        private void CalculateMin()
-        {
-            if (iph.li_paramsLoc.Count() == 1)
-            {
-                var _value = GetCumulative(iph.li_params, "min");
-                _opStack.PushAt(iph.NextTuplePush, _value);
-            }
-        }
-        private void CalculateCount()
-        {
-            if (iph.li_paramsLoc.Count() == 1)
-            {
-                var _value = GetCumulative(iph.li_params, "count");
-                _opStack.PushAt(iph.NextTuplePush, _value);
-            }
-        }
-        private void CalculateSum()
-        {
-            if (iph.li_paramsLoc.Count() == 1)
-            {
-                var _value = GetCumulative(iph.li_params, "+");
-                _opStack.PushAt(iph.NextTuplePush, _value);
-            }
-        }
-        private void CalculateAvg()
-        {
-            if (iph.li_paramsLoc.Count() == 1)
-            {
-                var _value = GetCumulative(iph.li_params, "+") / GetCumulative(iph.li_params, "count");
-                _opStack.PushAt(iph.NextTuplePush, _value);
             }
         }
         private void CalculateRunningTotal()

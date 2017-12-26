@@ -35,7 +35,7 @@ namespace Arithmetic.IO.Helpers
 
 
 
-       // public List<dynamic> li_multiValueparams = new List<dynamic>();
+        public Dictionary<string, List<double>> _externalData = new Dictionary<string, List<double>>();
         public List<double> li_params = new List<double>();
         public List<int> li_paramsLoc = new List<int>();
 
@@ -88,9 +88,17 @@ namespace Arithmetic.IO.Helpers
         Functions intern_fn = new Functions();
 
 
-        public InterpreterPropertyHelper(OpStack opStack)
+        public InterpreterPropertyHelper(OpStack opStack, Dictionary<string, List<double>> externalData)
         {
             _opStack = opStack;
+            if (externalData != null) // FEELS REALLY INEFFICIENT
+            {
+                foreach (var item in externalData)
+                {
+                    item.Value.Reverse();                    
+                }
+                _externalData = externalData;
+            }
         }
 
 
@@ -206,6 +214,13 @@ namespace Arithmetic.IO.Helpers
                     _opStack.PopAt(_next_value_location);//REMOVE DOUBLE VALUE FROM STACK
                     _next_value_location = index; //RESET TO INDEX
                 }
+                else if (_value is string && _value != "|" && _value != ",") // CHECKING FOR AN EXTERNAL ARRAY REFERENCE
+                {
+                    li_params = _externalData[_value];// DO ERROR HANDLE HERE
+                    var index = _opStack.PeekSearchKeyPrevious(_next_value_location); // GET THE NEXT INDEX LOCATION
+                    _opStack.PopAt(_next_value_location);//REMOVE DOUBLE VALUE FROM STACK
+                    _next_value_location = index; //RESET TO INDEX
+                }
                 else
                 {
                     var t = _value.GetType();
@@ -244,16 +259,35 @@ namespace Arithmetic.IO.Helpers
                 }               
                 else if (_value is Int32 || _value is double || _value is Single || _value is string)//PER LANGUAGE SPECS, THIS MUST BE AN INT OR DOUBLE VALUE
                 {
+                    // EXPLANATION:
+                    // IF WE HAVE A STRING ITS 1 or 2 THINGS... a RESERVED CHAR LIKE <>=@ OR A [COLUMNNAME]
                     if (_value is string) 
                     {
                         _value = TranslateSpecialCharToIntCode(_value);
+
+                        if (_value == -99) // CHECKING FOR AN EXTERNAL ARRAY REFERENCE WHICH IS CODED -99
+                        {
+                            _value = _opStack.PeekValueAt(_next_value_location);
+                            li_params.AddRange(_externalData[_value]); // ADD RANGE SINCE WE MAY ALREADY HAVE PARAMS IN THE LIST
+                        }
+                        else
+                        {
+                            li_params.Add(_value);// ADD TO PARAM LIST IF IT WAS REALLY A SPECIAL CHAR
+                        }
+                     }
+                    else
+                    {
+                        li_params.Add(_value);// ADD TO PARAM LIST IF IT WAS NOT A COLUMNNAME OR SPECIAL CHAR (INT,DOUBLE SINGLE)
                     }
 
-                    li_params.Add(_value);// ADD TO PARAM LIST
+                    
+
+
                     var index = _opStack.PeekSearchKeyPrevious(_next_value_location); // GET THE NEXT INDEX LOCATION
                     _opStack.PopAt(_next_value_location);//REMOVE DOUBLE VALUE FROM STACK
                     _next_value_location = index; //RESET TO INDEX
-                }               
+                }
+               
                 else
                 {                    
                     _opStack.Clear();
@@ -317,6 +351,9 @@ namespace Arithmetic.IO.Helpers
                     break;
                 case "@":
                     _value = 0;
+                    break;
+                default:
+                    _value = -99;
                     break;
             }
 

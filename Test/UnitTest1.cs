@@ -25,60 +25,65 @@ namespace Test
             ArithmeticEvaluator("foreach(1|2|3,@)", "foreach(1|2|3,@)");
             ArithmeticEvaluator("sum(", "sum(");
             ArithmeticEvaluator("take(1|2|3|4|5,>,3)", "take(1|2|3|4|5,>,3)");
-           // ArithmeticEvaluator("foreach(foreach(1|2|3|4|5,@),right((1|2|3|4|5),@))", "foreach(foreach(1|2|3|4|5,@),right((1|2|3|4|5),@))");
+            ArithmeticEvaluator("sum([column])", "sum([column])");
+            // ArithmeticEvaluator("foreach(foreach(1|2|3|4|5,@),right((1|2|3|4|5),@))", "foreach(foreach(1|2|3|4|5,@),right((1|2|3|4|5),@))");
         }
 
         [TestMethod]
         public void Test_ArithmeticInterpreter()
         {
+            var _externalData = new Dictionary<string, List<double>>();
+            _externalData.Add("column", new List<double> {  1, 2, 3, 4, 5 });
 
+            
 
             #region  function_input_type_SingleParam
 
 
             #region function_output_type_SingleValue
             // SINGLE-PARAM
-            ArithmeticEvaluator("abs(1|4|3|2)", "ERROR:1000", true);
-            ArithmeticEvaluator("abs(1|4|3|2,6)", "ERROR:1001", true);
-            ArithmeticEvaluator("abs(-4)", "4", true);     
-            ArithmeticEvaluator("sin(4)", "0.0697564737441253", true);
-            ArithmeticEvaluator("cos(4)", "0.997564050259824", true);
-            ArithmeticEvaluator("tan(4)", "0.0699268119435104", true);
-            ArithmeticEvaluator("exp(4)", "54.5981500331442", true);
-            ArithmeticEvaluator("log(4)", "0.602059991327962", true);
-            ArithmeticEvaluator("sqrt(16)", "4", true);
-            ArithmeticEvaluator("fibonacci(8)", "21", true);
+            ArithmeticEvaluator("abs(1|4|3|2)", "ERROR:1000", null, true);
+            ArithmeticEvaluator("abs(1|4|3|2,6)", "ERROR:1001", null, true);
+            ArithmeticEvaluator("abs(-4)", "4", null, true);     
+            ArithmeticEvaluator("sin(4)", "0.0697564737441253", null, true);
+            ArithmeticEvaluator("cos(4)", "0.997564050259824", null, true);
+            ArithmeticEvaluator("tan(4)", "0.0699268119435104", null, true);
+            ArithmeticEvaluator("exp(4)", "54.5981500331442", null, true);
+            ArithmeticEvaluator("log(4)", "0.602059991327962", null, true);
+            ArithmeticEvaluator("sqrt(16)", "4", null, true);
+            ArithmeticEvaluator("fibonacci(8)", "21", null, true);
             // MULTI-PARAM
-            ArithmeticEvaluator("mod(10,3)", "1", true);
-            ArithmeticEvaluator("mod(10,2)", "0", true);
-            ArithmeticEvaluator("round(avg(1|4|3|2),0)", "2", true);
-            ArithmeticEvaluator("power(2,3)", "8", true);
-            ArithmeticEvaluator("index(4|4|5|6|1,5)", "3", true);
+            ArithmeticEvaluator("mod(10,3)", "1", null, true);
+            ArithmeticEvaluator("mod(10,2)", "0", null, true);
+            ArithmeticEvaluator("round(avg(1|4|3|2),0)", "2", null, true);
+            ArithmeticEvaluator("power(2,3)", "8", null, true);
+            ArithmeticEvaluator("index(4|4|5|6|1,6)", "4", null, true);
+            ArithmeticEvaluator("index([column],5)", "5", _externalData, true);
             // PARAMLESS
-            ArithmeticEvaluator("pi()", "3.14159265358979", true);
-            ArithmeticEvaluator("e()", "2.71828182845905", true);
+            ArithmeticEvaluator("pi()", "3.14159265358979", null, true);
+            ArithmeticEvaluator("e()", "2.71828182845905", null, true);
             #endregion
 
             #region function_output_type_MultiValue
             // SINGLE-PARAM
-            ArithmeticEvaluator("asc(1|4|3|2)", "{1|2|3|4}", true);
-            ArithmeticEvaluator("asc(1|4|3|2,3)", "ERROR:1001", true);
-            ArithmeticEvaluator("desc(1|4|3|2)", "{4|3|2|1}", true);
-            ArithmeticEvaluator("seq(5)", "{1|2|3|4|5}", true);
-            ArithmeticEvaluator("distinct(1|4|3|2|1|1|2)", "{1|2|3|4}", true);
-            ArithmeticEvaluator("max(1|4|3|2)", "4", true);
-            ArithmeticEvaluator("min(1|4|3|2)", "1", true);
-            ArithmeticEvaluator("count(1|4|3|2|3)", "5", true);
-            ArithmeticEvaluator("sum(1|4|3|2)", "10", true);
-            ArithmeticEvaluator("avg(1|4|3|2)", "2.5", true);
-            ArithmeticEvaluator("runningtotal(1|4|3|2)", "{1|5|8|10}", true);
+            ArithmeticEvaluator("asc(1|4|3|2)", "{1|2|3|4}", null, true);
+            ArithmeticEvaluator("asc(1|4|3|2,3)", "ERROR:1001", null, true);
+            ArithmeticEvaluator("desc(1|4|3|2)", "{4|3|2|1}", null, true);
+            ArithmeticEvaluator("seq(5)", "{1|2|3|4|5}", null, true);
+            ArithmeticEvaluator("distinct(1|4|3|2|1|1|2)", "{1|2|3|4}", null, true);
+            ArithmeticEvaluator("max(1|4|3|2)", "4", null, true);
+            ArithmeticEvaluator("min(1|4|3|2)", "1", null, true);
+            ArithmeticEvaluator("count(1|4|3|2|3)", "5", null, true);
+            ArithmeticEvaluator("sum(1|4|3|2)", "10", null, true);
+            ArithmeticEvaluator("avg(1|4|3|2)", "2.5", null, true);
+            ArithmeticEvaluator("runningtotal(1|4|3|2)", "{1|5|8|10}", null, true);
 
             // MULTI-PARAM
-            ArithmeticEvaluator("product(1|2|3,1|2|3)", "{1|4|9}", true);
-            ArithmeticEvaluator("iif(count(1|2|3|4|4|3|2|1|2|3|1|3|4|5),=,14-1+1,sum(1|2|3),7)", "6", true);
-            ArithmeticEvaluator("left(1|2|3|4,2)", "{1|2}", true);
-            ArithmeticEvaluator("right(1|2|3|4,2)", "{3|4}", true);
-            ArithmeticEvaluator("take(1|2|3|4|5,>,3)", "{4|5}", true);
+            ArithmeticEvaluator("product(1|2|3,1|2|3)", "{1|4|9}", null, true);
+            ArithmeticEvaluator("iif(count(1|2|3|4|4|3|2|1|2|3|1|3|4|5),=,14-1+1,sum(1|2|3),7)", "6", null, true);
+            ArithmeticEvaluator("left(1|2|3|4,2)", "{1|2}", null, true);
+            ArithmeticEvaluator("right(1|2|3|4,2)", "{3|4}", null, true);
+            ArithmeticEvaluator("take(1|2|3|4|5,>,3)", "{4|5}", null, true);
             #endregion
 
 
@@ -90,11 +95,11 @@ namespace Test
 
 
             // RANDOM COMPLEX STUFF
-            ArithmeticEvaluator("round(1/6*(tan(sin(-6+2))*cos(.25))+log(10)-exp(7)+8.88E-11-100.0,4)", "-1195.6334", true);
+            ArithmeticEvaluator("round(1/6*(tan(sin(-6+2))*cos(.25))+log(10)-exp(7)+8.88E-11-100.0,4)", "-1195.6334", null, true);
 
-            ArithmeticEvaluator("take(1|2|3|10000|11000,>,-1*round(1/6*(tan(sin(-6+2))*cos(.25))+log(10)-exp(7)+8.88E-11-100.0,4))", "{10000|11000}", true);
+            ArithmeticEvaluator("take(1|2|3|10000|11000,>,-1*round(1/6*(tan(sin(-6+2))*cos(.25))+log(10)-exp(7)+8.88E-11-100.0,4))", "{10000|11000}", null, true);
 
-
+            ArithmeticEvaluator("take([column],<,sum([column]))", "{1|2|3|4|5}", _externalData, true);
 
 
             ////ArithmeticEvaluator("foreach(foreach(1|2|3|4|5,sum(@+1)),right((1|2|3|4|5),@))", "{5|{4,5}|{3,4,5}|{2,3,4,5}|{1,2,3,4,5}}", true);
@@ -142,7 +147,7 @@ namespace Test
 
 
 
-        private void ArithmeticEvaluator(string _inputexpr, string _inputresult, bool Interpret= false, bool failTest = false)
+        private void ArithmeticEvaluator(string _inputexpr, string _inputresult, Dictionary<string, List<double>> _external_data=null, bool Interpret= false, bool failTest = false)
         {
             var tokens = Helper_ConvertStringToList(_inputexpr);
             int _index = 0;
@@ -160,7 +165,7 @@ namespace Test
 
             if (Interpret == true && failTest == false)
             {
-                ArithmeticInterpreter i = new ArithmeticInterpreter();
+                ArithmeticInterpreter i = new ArithmeticInterpreter(ref _external_data);
                 i.Result(p.result);
                 var value = i.ActionList[0].event_data;
                 var stack = i.ActionList[1].event_data;
