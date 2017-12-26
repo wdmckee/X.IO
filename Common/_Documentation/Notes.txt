@@ -1,0 +1,3 @@
+﻿Classes in X.IO.Common only contain parsers.
+These clases are meant to be building blocks for other "complete" classes. 
+They should not contain an interpreter as that is a function of a class with its own _.IO project.

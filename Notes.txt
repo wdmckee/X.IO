@@ -1,0 +1,2 @@
+Scanners, Parsers, & Interpreters exist at _.IO project levels. 
+Sub-Parsers can exists in common. Testing anything in common requires testing without a scanner or interpreter.

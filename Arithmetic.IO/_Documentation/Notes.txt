@@ -1,0 +1,90 @@
+﻿
+----------------------------------- BNF -----------------------------------
+
+arith-expression:
+    term
+    | term term-sequence
+term-sequence:
+	infix-operator-type1 term
+	| infix-operator-type1 term term-sequence	
+term:
+	factor
+    | factor factor-sequence
+factor-sequence:
+	infix-operator-type2 factor
+	| infix-operator-type2 factor factor-sequence
+arith-expression-sequence: 
+	 arith-expression
+	| arith-expression pipe arith-expression-sequence
+parameter-sequence:
+	arith-expression-sequence
+	| arith-expression-sequence comma parameter-sequence
+	| external-array   *** NEW ***
+function-parameter:
+	minus? paren? parameter-sequence? paren?
+	| array-function   *** NEW ***  
+factor:
+	Number.number 	
+	| iterator
+	| conditional   
+	| signed-function? function-parameter
+array-function:
+	( "{" parameter-sequence comma arith-expression "}" )
+
+
+signed-function:
+	minus? function
+function:
+	Word.word
+infix-operator-type1:
+	"+" | "-" 
+infix-operator-type2:
+	"*" | "/" 
+minus:
+	"+" | "-"
+iterator:
+	"@"
+paren:
+	"(" | ")"
+pipe:
+	"|"
+conditional:
+	">" | "<" | "="
+external-array:
+	System.Array[double]
+
+
+
+
+ERROR:1000 | looks like you tried to feed a parameter sequence (array) to a function that only accepts a single number as a parameter | scope:interpreter.calculations
+ERROR:1001 | only number sequences (arrays) are allowed in this context	| scope:interpreter.evaluations
+ERROR:1002 | not correct number of params	| scope:interpreter.calculations
+
+
+
+	----------------------------------- more notes -----------------------------------
+	We have 3 types of functions
+	(1) paramless
+	(2) single value
+	(3) parameterized
+	eventually we only want to keep #1 & #3
+
+
+	----------------------------------- Objects -----------------------------------
+	Functions need a meta language
+
+	Result:
+		Value
+		StringValue
+		Visual
+		JsonObject (custom object)
+
+
+
+TODO NOTES:
+Clean up the ihp and move it to the "Helpers" namespace.
+Remove any hardcoded strings or triggers from th ihp.
+remove number_1 and number_2 stuff and consolidate.
+add external arrays
+add array-functions
+change result sets to use "[]" instead of "{}"
