@@ -88,17 +88,10 @@ namespace Arithmetic.IO.Helpers
         Functions intern_fn = new Functions();
 
 
-        public InterpreterPropertyHelper(OpStack opStack, Dictionary<string, List<double>> externalData)
+        public InterpreterPropertyHelper(OpStack opStack, ref Dictionary<string, List<double>> externalData)
         {
             _opStack = opStack;
-            if (externalData != null) // FEELS REALLY INEFFICIENT
-            {
-                foreach (var item in externalData)
-                {
-                    item.Value.Reverse();                    
-                }
-                _externalData = externalData;
-            }
+            _externalData = externalData;
         }
 
 
@@ -216,7 +209,7 @@ namespace Arithmetic.IO.Helpers
                 }
                 else if (_value is string && _value != "|" && _value != ",") // CHECKING FOR AN EXTERNAL ARRAY REFERENCE
                 {
-                    li_params = _externalData[_value];// DO ERROR HANDLE HERE
+                    li_params.AddRange(_externalData[_value]);// DO ERROR HANDLE HERE
                     var index = _opStack.PeekSearchKeyPrevious(_next_value_location); // GET THE NEXT INDEX LOCATION
                     _opStack.PopAt(_next_value_location);//REMOVE DOUBLE VALUE FROM STACK
                     _next_value_location = index; //RESET TO INDEX

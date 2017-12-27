@@ -32,10 +32,11 @@ namespace Test
         [TestMethod]
         public void Test_ArithmeticInterpreter()
         {
-            var _externalData = new Dictionary<string, List<double>>();
+            var _externalData = new Dictionary<string,dynamic>();
             _externalData.Add("column", new List<double> {  1, 2, 3, 4, 5 });
-
             
+
+
 
             #region  function_input_type_SingleParam
 
@@ -100,25 +101,8 @@ namespace Test
             ArithmeticEvaluator("take(1|2|3|10000|11000,>,-1*round(1/6*(tan(sin(-6+2))*cos(.25))+log(10)-exp(7)+8.88E-11-100.0,4))", "{10000|11000}", null, true);
 
             ArithmeticEvaluator("take([column],<,sum([column]))", "{1|2|3|4|5}", _externalData, true);
+            ArithmeticEvaluator("take([column],<,sum([column])-12)", "{1|2}", _externalData, true);
 
-
-            ////ArithmeticEvaluator("foreach(foreach(1|2|3|4|5,sum(@+1)),right((1|2|3|4|5),@))", "{5|{4,5}|{3,4,5}|{2,3,4,5}|{1,2,3,4,5}}", true);
-            ////ArithmeticEvaluator("asc(1,4,3,2,5)", "{1|2|3|4|5}", true); // good example of an error in interpreting
-            //ArithmeticEvaluator("asc(1|4|3|2|5)", "{1|2|3|4|5}", true); // Leading negatives
-            //ArithmeticEvaluator("multiply(1/6*(tan(sin(-6+2))*cos(.25))+log(10)-exp(7)|2)", "-2191.2667", true);
-            //ArithmeticEvaluator("--(-6+2)", "-4", true); // Leading negatives
-            //ArithmeticEvaluator("(5*7/5)+(23)-5*(98-4)/(6*7-42)", "-∞", true);
-            //ArithmeticEvaluator("sum(2|2|2)", "6", true);
-
-
-            //ArithmeticEvaluator("left(1|2|3|4|5,3)", "{1|2|3}", true);// tuple does not work
-            //ArithmeticEvaluator("iif(count(1|2|3|4|4|3|2|1|2|3|1|3|4|5),=,14-1+1,sum(1|2|3),7)", "6", true);// iif
-            ////ArithmeticEvaluator("foreach(1|sum(2|3)|3,sum(@|2))", "{3|7|5}", true);
-            ////ArithmeticEvaluator("sum(foreach(1|sum(2|3)|3,sum(@|2)))", "15", true);
-            //ArithmeticEvaluator("take(1|2|3|4|5,>,3)", "{4|5}", true);
-            //ArithmeticEvaluator("count(take(1|2|3|4|5,>,3))", "2", true);
-            //ArithmeticEvaluator("round(pi(),2)", "3.14", true);
-            ////ArithmeticEvaluator("{runningsum(2|4|6|8|10),@}", "{2|6|12|20|30}", true);
 
         }
 
@@ -147,32 +131,33 @@ namespace Test
 
 
 
-        private void ArithmeticEvaluator(string _inputexpr, string _inputresult, Dictionary<string, List<double>> _external_data=null, bool Interpret= false, bool failTest = false)
+        private void ArithmeticEvaluator(string _inputexpr, string _inputresult, Dictionary<string, dynamic> _external_data=null, bool Interpret= false, bool failTest = false)
         {
-            var tokens = Helper_ConvertStringToList(_inputexpr);
-            int _index = 0;
-            ArithmeticParser p = new ArithmeticParser(tokens, ref _index);
 
-            var _actual = p.arith_expression.expression;
+
+
             var _expected = _inputresult;
 
 
-           
             if (Interpret == false && failTest == false)
             {
+                var tokens = Helper_ConvertStringToList(_inputexpr);
+                int _index = 0;
+                ArithmeticParser p = new ArithmeticParser(tokens, ref _index);
+
+                var _actual = p.arith_expression.expression;
+                
+
                 Assert.AreEqual(_expected, _actual);
             }
 
             if (Interpret == true && failTest == false)
             {
-                ArithmeticInterpreter i = new ArithmeticInterpreter(ref _external_data);
-                i.Result(p.result);
-                var value = i.ActionList[0].event_data;
-                var stack = i.ActionList[1].event_data;
-               // if (stack.Count() > 1)
-                    Assert.AreEqual(_expected, value.ToString());
-                //else
-                   // Assert.AreEqual(_expected, Math.Round(value, 4).ToString());
+               
+                X.IO.Arithmetic.Arithmetic ii = new X.IO.Arithmetic.Arithmetic();
+                var _result = ii.Parse(_inputexpr, _external_data);
+                Assert.AreEqual(_expected, _result.value.ToString());
+
             }
 
 

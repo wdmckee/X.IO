@@ -17,6 +17,9 @@ namespace X.IO.Arithmetic
 
         public Dictionary<string, List<double>> _externalData = new Dictionary<string, List<double>>();
         public List<Arithmetic_ActionData> ActionList = new List<Arithmetic_ActionData>();
+
+
+
         OpStack _opStack = new OpStack();
         //OpStack _delayedfnStack = new OpStack();
         OpStack _resultStack = new OpStack();
@@ -36,9 +39,24 @@ namespace X.IO.Arithmetic
         {
 
         }
-        public ArithmeticInterpreter(ref Dictionary<string, List<double>> ExternalData)
+        public ArithmeticInterpreter(Dictionary<string, dynamic> ExternalData)
         {
-            _externalData = ExternalData;
+            // THIS IS TERRIBLE
+            if (ExternalData != null)
+            {             
+                foreach (var item in ExternalData)
+                {
+                    if (item.Value is List<double>)
+                    {
+                        var key = item.Key;
+                        var value = new List<double>(); value = ((List < double > )item.Value).ToList();
+                        value.Reverse();
+                        _externalData.Add(key, value);
+                    }
+
+                   
+                }
+            }
         }
         public void Result(dynamic result)
         {
@@ -759,7 +777,7 @@ namespace X.IO.Arithmetic
 
             
 
-            iph = new InterpreterPropertyHelper(_opStack, _externalData);
+            iph = new InterpreterPropertyHelper(_opStack, ref _externalData);
             iph.StatusEvaluations();
       
             if(!iph.isError)
@@ -792,6 +810,7 @@ namespace X.IO.Arithmetic
             }
             else
                 ActionList.Add(new Arithmetic_ActionData(expression));
+ 
             #endregion
 
         }
