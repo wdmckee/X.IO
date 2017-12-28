@@ -191,6 +191,24 @@ namespace X.IO.Arithmetic
              return _self;
         }
 
+        private external_array Parse_external_array()
+        {
+            if (_index >= _tokens.Count()) { return null; }
+
+
+            external_array _self = null;
+            var ident_lhs = Parse_Bracket();
+           
+            if (ident_lhs != null)
+            {
+                var _word = new WordParser(_tokens, ref _index);
+                var ident_rhs = Parse_Bracket();
+                _self = new external_array(ident_lhs, _word.word, ident_rhs);
+            }
+
+            return _self;
+
+        }
         #endregion
         
 
@@ -248,11 +266,21 @@ namespace X.IO.Arithmetic
 
         public arith_expression_sequence Parse_arith_expression_sequence(arith_expression_sequence _self = null)
         {
+            var _external_array = Parse_external_array();
+            if (_external_array != null)
+            {
+                var _parameter_sequence = new arith_expression_sequence(_external_array);
+                _self = _parameter_sequence; // we cant have a recursive here
+                return _self;
+            }
+
+
+
             var _pipe = Parse_pipe();
-            if (_self != null && _pipe == null) { return _self; }
+            if ((_self != null && _pipe == null ) && _external_array == null) { return _self; }
             //  very important - stops infinite loop basically we must have a "|number" following
 
-            var _arith_expression = Parse_arith_expression();
+            var _arith_expression = Parse_arith_expression();            
 
             if (_arith_expression != null && _pipe == null)
             {
@@ -268,6 +296,8 @@ namespace X.IO.Arithmetic
                 return _self;
             }
 
+           
+
             return _self;
 
 
@@ -281,6 +311,7 @@ namespace X.IO.Arithmetic
             //  very important - stops infinite loop basically we must have a ",expr" following
 
             var _arith_expression_sequnce = Parse_arith_expression_sequence();
+            
 
             if (_arith_expression_sequnce != null && _comma == null)
             {
@@ -295,6 +326,8 @@ namespace X.IO.Arithmetic
                 _self = Parse_parameter_sequence(_parameter_sequence);
                 return _self;
             }
+
+          
 
             return _self;
 
@@ -384,7 +417,28 @@ namespace X.IO.Arithmetic
             }
         }
 
-    
+        private bracket Parse_Bracket()
+        {
+            if (_index >= _tokens.Count()) { return null; } // must be first line on any atom
+
+            /*  infix_operator_type1:
+                    ( ) */
+
+            var _data = _tokens[_index];
+            var _self = new bracket(_data);
+
+
+
+            if (_self.is_bracket)
+            {
+                _index++;
+                return _self;
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         private minus Parse_minus()
         {

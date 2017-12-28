@@ -14,12 +14,12 @@ factor-sequence:
 	infix-operator-type2 factor
 	| infix-operator-type2 factor factor-sequence
 arith-expression-sequence: 
-	 arith-expression
-	| arith-expression pipe arith-expression-sequence
+	 external-array
+	| arith-expression
+	| arith-expression pipe arith-expression-sequence	 
 parameter-sequence:
 	arith-expression-sequence
 	| arith-expression-sequence comma parameter-sequence
-	| external-array   *** NEW ***
 function-parameter:
 	minus? paren? parameter-sequence? paren?
 	| array-function   *** NEW ***  
@@ -32,6 +32,8 @@ array-function:
 	( "{" parameter-sequence comma arith-expression "}" )
 
 
+external-array:
+	bracket word bracket  (lookup the System.Array[dynamic])
 signed-function:
 	minus? function
 function:
@@ -46,12 +48,13 @@ iterator:
 	"@"
 paren:
 	"(" | ")"
+bracket:
+	"[" | "]"
 pipe:
 	"|"
 conditional:
 	">" | "<" | "="
-external-array:
-	System.Array[double]
+
 
 
 

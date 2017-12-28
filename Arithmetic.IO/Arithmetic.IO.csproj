@@ -42,8 +42,10 @@
   <ItemGroup>
     <Compile Include="arith-expression-sequence.cs" />
     <Compile Include="arith-expression.cs" />
+    <Compile Include="Arithmetic.cs" />
     <Compile Include="ArithmeticInterpreter.cs" />
     <Compile Include="ArithmeticParser.cs" />
+    <Compile Include="external-array.cs" />
     <Compile Include="factor-sequence.cs" />
     <Compile Include="factor.cs" />
     <Compile Include="function-parameter.cs" />
@@ -55,6 +57,7 @@
     <Compile Include="iterator.cs" />
     <Compile Include="minus.cs" />
     <Compile Include="parameter-sequence.cs" />
+    <Compile Include="bracket.cs" />
     <Compile Include="paren.cs" />
     <Compile Include="conditional.cs" />
     <Compile Include="pipe.cs" />
