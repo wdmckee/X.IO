@@ -155,7 +155,7 @@ namespace Test
             {
                
                 X.IO.Arithmetic.Arithmetic ii = new X.IO.Arithmetic.Arithmetic();
-                var _result = ii.Parse(_inputexpr, _external_data);
+                var _result = ii.Eval(_inputexpr, _external_data);
                 Assert.AreEqual(_expected, _result.value.ToString());
 
             }

@@ -11,7 +11,7 @@ namespace X.IO.Arithmetic
     {
 
 
-        public Result Parse(string _inputexpr, Dictionary<string, dynamic> _external_data = null)
+        public Result Eval(string _inputexpr, Dictionary<string, dynamic> _external_data = null)
         {
 
 
