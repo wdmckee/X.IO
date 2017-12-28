@@ -125,6 +125,7 @@ namespace Arithmetic.IO.Helpers
             // exit we are done if we have nor operators
             if (!status_execute_input_operation_function && !status_execute_input_operation_operator) { operation_done_last_round = false; return; }
 
+            if(next_location_input_operation_function > -1)
             end_location_input_operation_function = _opStack.PeekSearchAbove(next_location_input_operation_function, "end");
             
 

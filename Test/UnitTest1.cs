@@ -34,9 +34,9 @@ namespace Test
         {
             var _externalData = new Dictionary<string,dynamic>();
             _externalData.Add("column", new List<double> {  1, 2, 3, 4, 5 });
+
+
             
-
-
 
             #region  function_input_type_SingleParam
 
@@ -102,8 +102,8 @@ namespace Test
 
             ArithmeticEvaluator("take([column],<,sum([column]))", "{1|2|3|4|5}", _externalData, true);
             ArithmeticEvaluator("take([column],<,sum([column])-12)", "{1|2}", _externalData, true);
-
-
+             ArithmeticEvaluator("iif(1+2,<,5,1,0)+iif(1+2,<,5,1,0)", "2", null, true);
+            ArithmeticEvaluator("(2+1)+(-1)", "2", null, true);
         }
 
 
