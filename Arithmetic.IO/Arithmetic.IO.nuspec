@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Arithmetic.IO</id>
-    <version>2.0.1-alpha</version>
+    <version>1.0.0-beta</version>
     <title>$title$</title>
     <authors>Derek McKee</authors>
     <owners>$author$</owners>
