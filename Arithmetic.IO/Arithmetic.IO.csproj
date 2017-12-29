@@ -42,7 +42,7 @@
   <ItemGroup>
     <Compile Include="arith-expression-sequence.cs" />
     <Compile Include="arith-expression.cs" />
-    <Compile Include="Arithmetic.cs" />
+    <Compile Include="Evaluator.cs" />
     <Compile Include="ArithmeticInterpreter.cs" />
     <Compile Include="ArithmeticParser.cs" />
     <Compile Include="external-array.cs" />
