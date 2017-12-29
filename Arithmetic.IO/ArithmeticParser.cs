@@ -148,6 +148,7 @@ namespace X.IO.Arithmetic
             {
                 var _parameter_sequence = Parse_parameter_sequence();
                 _ident_rhs = Parse_Paren();
+                if (_ident_rhs != null)
                 _self = new function_parameter(_minus, _ident_lhs, _parameter_sequence, _ident_rhs);
             }
             else

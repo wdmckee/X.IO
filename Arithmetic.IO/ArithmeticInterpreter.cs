@@ -62,7 +62,7 @@ namespace X.IO.Arithmetic
         {
             
             expression = result.expression;
-            Console.WriteLine("{0}{1}","expr:", expression);
+           // Console.WriteLine("{0}{1}","expr:", expression);
             _resultStack.Push(result);
             top:
             // NOTICE BOTTOM UP METHODOLOGY OF INTERPRETER            

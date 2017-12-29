@@ -12,10 +12,11 @@ namespace X.IO.Common.Stack
 
         public string expression { get; }
         public dynamic value { get; set; }
-
+        public bool IsError { get; set; }
 
         public Result(dynamic data)
         {
+            IsError = false;
             value = data;
             expression = data?.expression;
         }

@@ -185,7 +185,7 @@ namespace Arithmetic.IO.Helpers
                 _current_operation = _opStack.PopAt(next_location_input_operation_operator_infix);
                 NextTuplePush = next_location_input_operation_operator_infix;
 
-                Console.WriteLine("{0} {1}  {2}  {3}", "step:", _number_1, _current_operation, _number_2);
+                //Console.WriteLine("{0} {1}  {2}  {3}", "step:", _number_1, _current_operation, _number_2);
         }
 
         private void DoSingleParamOperation()
@@ -235,7 +235,7 @@ namespace Arithmetic.IO.Helpers
                 _opStack.PopAt(next_location_input_operation_function);//REMOVE THE IDENTIFIER
                 _opStack.PopAt(_next_value_location);//REMOVE THE END FLAG
 
-                Console.WriteLine("{0} {1}", "step:",  _current_operation);
+                //Console.WriteLine("{0} {1}", "step:",  _current_operation);
         }
               
         private void DoMultiParamOperation()
@@ -310,7 +310,7 @@ namespace Arithmetic.IO.Helpers
 
 
             li_paramsLoc.Reverse();
-            Console.WriteLine("{0} {1}", "step:", _current_operation);
+            //Console.WriteLine("{0} {1}", "step:", _current_operation);
         }
 
        
@@ -320,7 +320,7 @@ namespace Arithmetic.IO.Helpers
 
             _opStack.PopAt(next_location_input_operation_function_paramless);
             _opStack.PopAt(end_location_input_operation_function);
-            Console.WriteLine("{0} {1}", "step:", _current_operation);
+            //Console.WriteLine("{0} {1}", "step:", _current_operation);
         }
 
 
