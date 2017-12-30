@@ -126,7 +126,6 @@ namespace X.IO.Arithmetic
             }
 
         
-
             return _self;
            
            
@@ -137,18 +136,25 @@ namespace X.IO.Arithmetic
                                     
             function_parameter _self = null;
 
-            var _minus = Parse_minus();            
+            List<minus> __minus = new List<minus>();
+            var _minus = Parse_minus();
+            while (_minus != null) { __minus.Add(_minus); _minus = Parse_minus(); ; }
+            if (__minus.Count > 0)
+                _minus = new minus(__minus);
+
+                        
             
             var _ident_lhs = Parse_Paren();
 
             var _ident_rhs = Parse_Paren();if (_ident_rhs != null && _ident_rhs.expression == "(") { _ident_rhs = null; _index--; }
             // this allows us to have functions with no parameters by checking for back to back of opposite direction.
 
-            if (_ident_rhs == null)
+            if (_ident_lhs!= null && _ident_rhs == null)
             {
                 var _parameter_sequence = Parse_parameter_sequence();
-                _ident_rhs = Parse_Paren();
-                if (_ident_rhs != null)
+                _ident_rhs = Parse_Paren();// this checks to see if after _parameter_sequence maybe we have a closing param
+
+                if (( _parameter_sequence==null && _ident_rhs != null ) || (_parameter_sequence != null && _ident_rhs != null) || _minus != null)// however, if we are missing a parameter we must have a closing ) to fill out a paramless function or we may have a leading minus as in --(-6+2)
                 _self = new function_parameter(_minus, _ident_lhs, _parameter_sequence, _ident_rhs);
             }
             else
@@ -165,8 +171,15 @@ namespace X.IO.Arithmetic
             signed_function _self = null;
 
             var _backtrack = _index;
-            minus _minus = null;
-            _minus = Parse_minus();
+
+            List<minus> __minus = new List<minus>();
+            var _minus = Parse_minus();
+            while (_minus != null) { __minus.Add(_minus); _minus = Parse_minus(); ; }
+            if (__minus.Count > 0)
+                _minus = new minus(__minus);
+
+            //minus _minus = null;
+            //_minus = Parse_minus();
 
             var _function = Parse_function();
 
@@ -281,7 +294,8 @@ namespace X.IO.Arithmetic
             if ((_self != null && _pipe == null ) && _external_array == null) { return _self; }
             //  very important - stops infinite loop basically we must have a "|number" following
 
-            var _arith_expression = Parse_arith_expression();            
+            var _arith_expression = Parse_arith_expression();   
+            // RECURSION PROBLEM HERE USE "/" as an example math expression         
 
             if (_arith_expression != null && _pipe == null)
             {

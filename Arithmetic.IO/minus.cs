@@ -12,8 +12,9 @@ namespace X.IO.Arithmetic
     {
 
         public string expression { get; }
+        public string functional_expression { get; }
         public bool is_minus { get; }
-
+        public SpecialToken token { get; set; }
 
         public minus(SpecialToken data)
         {
@@ -25,6 +26,7 @@ namespace X.IO.Arithmetic
                 | data.StringValue.Equals("+")
                 )
             {
+                token = data;
                 is_minus = true;
                 expression = data.StringValue;
             }
@@ -34,7 +36,64 @@ namespace X.IO.Arithmetic
             }
         }
 
+        public minus(List<minus> _minus_sequnce)
+        {
+            minus current = null;
+            minus prev = null;
+            string _expression = string.Empty;
 
+            #region loop
+            foreach (var _minus in _minus_sequnce)
+            {
+
+                /*
+                    -- = +
+                    ++ = +
+                    -+ = -
+                    +- = -   
+                */
+
+                current = _minus;
+                _expression += current.expression;
+
+                if (prev != null)
+                {
+
+                    if (  // do we have a --?                      
+                            current.token.StringValue == "-" && prev.token.StringValue == "-"
+                         || prev.token.StringValue == "-" && current.token.StringValue == "-"
+                         // or do we have a ++?
+                         || (current.token.StringValue == "+" && prev.token.StringValue == "+")
+                         || (prev.token.StringValue == "+" && current.token.StringValue == "+")
+                        )
+                    {
+                        current = new minus(new SpecialToken('+'));
+                    }
+                    else
+                    {
+                        current = new minus(new SpecialToken('-'));
+                    }
+
+                }
+
+                prev = current;
+
+
+            }
+            #endregion
+
+            if (_minus_sequnce.Count > 0)
+            {
+                token = current.token;
+                is_minus = true;
+                expression = _expression;
+                functional_expression = current.expression;
+            }
+            else
+            {
+                is_minus = false;
+            }
+        }
 
 
 

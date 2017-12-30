@@ -17,13 +17,14 @@ namespace Test
         [TestMethod]
         public void Test_ArithmeticParser()
         {
+            
             ArithmeticEvaluator("77", "77"); // integer evaluates to expression
             ArithmeticEvaluator("--(-6+2)", "--(-6+2)"); // Leading negatives
             ArithmeticEvaluator("(5*7/5)+(23)-5*(98-4)/(6*7-42)", "(5*7/5)+(23)-5*(98-4)/(6*7-42)");
             ArithmeticEvaluator("1/6*(tan(sin(-6+2))*cos(.25))+log(10)-exp(7)", "1/6*(tan(sin(-6+2))*cos(.25))+log(10)-exp(7)");
             ArithmeticEvaluator("sum(77|77,88|88)", "sum(77|77,88|88)");
             ArithmeticEvaluator("foreach(1|2|3,@)", "foreach(1|2|3,@)");
-            ArithmeticEvaluator("sum(", "sum(");
+            ArithmeticEvaluator("sum(", null);
             ArithmeticEvaluator("take(1|2|3|4|5,>,3)", "take(1|2|3|4|5,>,3)");
             ArithmeticEvaluator("sum([column])", "sum([column])");
             // ArithmeticEvaluator("foreach(foreach(1|2|3|4|5,@),right((1|2|3|4|5),@))", "foreach(foreach(1|2|3|4|5,@),right((1|2|3|4|5),@))");
@@ -36,7 +37,7 @@ namespace Test
             _externalData.Add("column", new List<double> {  1, 2, 3, 4, 5 });
 
 
-            
+          //  ArithmeticEvaluator("--(-6+2)", "-4", null, true);
 
             #region  function_input_type_SingleParam
 
@@ -103,10 +104,18 @@ namespace Test
             ArithmeticEvaluator("take([column],<,sum([column]))", "{1|2|3|4|5}", _externalData, true);
             ArithmeticEvaluator("take([column],<,sum([column])-12)", "{1|2}", _externalData, true);
             ArithmeticEvaluator("iif(1+2,<,5,1,0)+iif(1+2,<,5,1,0)", "2", null, true);
+
+
+            ArithmeticEvaluator("---(--6+2)", "-8", null, true);
+            ArithmeticEvaluator("---(-6+2)", "4", null, true);
+            ArithmeticEvaluator("--(-6+2)", "-4",null, true); // Leading negatives
             ArithmeticEvaluator("(2+1)+(-1)", "2", null, true);
             ArithmeticEvaluator("(2 + 1)+ ( - 1 )", "2", null, true);
-            ArithmeticEvaluator("(2 + 1)+ (", "", null, true);
+            ArithmeticEvaluator("(2 + 1)+ (", "3", null, true);
             ArithmeticEvaluator("(2 + A)+ 1", "", null, true);
+            ArithmeticEvaluator("(2 + A)+// 1", "", null, true);
+            //ArithmeticEvaluator("?", "", null, true);
+            ArithmeticEvaluator("/", "", null, true);
         }
 
 
@@ -148,7 +157,7 @@ namespace Test
                 int _index = 0;
                 ArithmeticParser p = new ArithmeticParser(tokens, ref _index);
 
-                var _actual = p.arith_expression.expression;
+                var _actual = p.arith_expression?.expression;
                 
 
                 Assert.AreEqual(_expected, _actual);

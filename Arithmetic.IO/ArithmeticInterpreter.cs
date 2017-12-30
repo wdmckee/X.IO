@@ -264,7 +264,7 @@ namespace X.IO.Arithmetic
                 if (_result.minus != null)
                 {
 
-                    _opStack.Push(_result.minus.expression);
+                    _opStack.Push(_result.minus.functional_expression); // note use of functional-expression
                     _result.minus = null;
 
                 }
@@ -415,7 +415,7 @@ namespace X.IO.Arithmetic
                 if (_result.minus != null)
                 {
 
-                    _opStack.Push(_result.minus.expression);
+                    _opStack.Push(_result.minus.functional_expression); // note use of functional-expression
                     _result.minus = null;
                     goto top;
                 }
@@ -769,7 +769,7 @@ namespace X.IO.Arithmetic
 
 
             // HERE WE NOW HAVE POST-FIX OPERATORS. SEARCH FROM TOP TO BOTTOM.
-
+            if (_opStack.Count() == 0) { ActionList.Add(new Arithmetic_ActionData(expression)); return; }
 
 
             // un-comment this again if we have issues with where the calulates are
@@ -942,7 +942,7 @@ namespace X.IO.Arithmetic
                 #region not yet classified
 
 
-
+                // NOT TO BE USED YET !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
                 case "multiply":
                     if (paramCount != 1) { ExpectedParameterError(paramCount, "multiply"); }
@@ -955,27 +955,7 @@ namespace X.IO.Arithmetic
                     _opStack.PushAt(iph.NextTuplePush, _value);
                     break;
                
-               
-
-             
-
-
-
-
-                
-
-
-
-
-              
-               
-
-                
-               
-
-               
-
-               
+            
                 case "parameter":
                     var _param = ReturnParameter(1);
                     // we don't supply a param for this one only
