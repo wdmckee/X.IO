@@ -16,9 +16,20 @@ namespace X.IO.Common.Stack
 
         public Result(dynamic data)
         {
-            IsError = false;
+            if (data != null)
+                IsError = false;
+            else
+                IsError = true;
+
+
+
             value = data;
-            expression = data?.expression;
+
+            if (data is string)// other string messages like help strings and such
+            { expression = data; }
+            else
+            { expression = data?.expression; }
+                
         }
 
       

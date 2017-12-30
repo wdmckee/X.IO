@@ -13,21 +13,21 @@ term:
 factor-sequence:
 	infix-operator-type2 factor
 	| infix-operator-type2 factor factor-sequence
-arith-expression-sequence: 
-	 external-array
-	| arith-expression
-	| arith-expression pipe arith-expression-sequence	 
-parameter-sequence:
-	arith-expression-sequence
-	| arith-expression-sequence comma parameter-sequence
-function-parameter:
-	minus? paren? parameter-sequence? paren?
-	| array-function   *** NEW ***  
 factor:
 	Number.number 	
 	| iterator
 	| conditional   
 	| signed-function? function-parameter
+function-parameter:
+	minus? paren parameter-sequence? paren 
+	| array-function   *** NEW ***
+arith-expression-sequence: VIOLATES RECURSION
+	 external-array
+	| arith-expression
+	| arith-expression pipe arith-expression-sequence	 
+parameter-sequence: does not really violate recursion rule i don't think but checks just in case
+	arith-expression-sequence
+	| arith-expression-sequence comma parameter-sequence  
 array-function:
 	( "{" parameter-sequence comma arith-expression "}" )
 
@@ -54,6 +54,8 @@ pipe:
 	"|"
 conditional:
 	">" | "<" | "="
+comma
+	","
 
 
 
@@ -62,6 +64,22 @@ conditional:
 ERROR:1000 | looks like you tried to feed a parameter sequence (array) to a function that only accepts a single number as a parameter | scope:interpreter.calculations
 ERROR:1001 | only number sequences (arrays) are allowed in this context	| scope:interpreter.evaluations
 ERROR:1002 | not correct number of params	| scope:interpreter.calculations
+
+
+
+
+
+
+
+RECURSION VIOLATION PRICIPLE:
+production-node
+	production-value-1
+	|production-value-2 production-value-3
+
+here "production-value-1" cannot be found above (or precedent to) "production-node", if so we get inifinite recursion
+"production-value-3" is ok as it can be found above as long as "production-value-2" is not. this si due to the fact that "production-value-2" is a gate to "production-value-3".
+
+
 
 
 
