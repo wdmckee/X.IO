@@ -69,6 +69,10 @@ namespace X.IO.Arithmetic
                 word = _word;
                 expression = _word.expression;
             }
+            else
+            {
+                extern_fn = null; // force everything to return null for parser
+            }
 
         }
 

@@ -898,13 +898,7 @@ namespace X.IO.Arithmetic
                     break;
                 case "power":
                     CalculatePower();
-                    break;
-                case "left":
-                    CalculateLeft();                   
-                    break;
-                case "right":
-                    CalculateRight();
-                    break;
+                    break;     
                 case "index":
                     CalculateIndex();                   
                     break;
@@ -912,6 +906,13 @@ namespace X.IO.Arithmetic
                 #endregion
 
                 #region function_output_type_MultiValue
+                    // ALL OF THESE FUNCTIONS MUST IMPLEMENT PushRipple CHECKS
+                case "left":
+                    CalculateLeft();
+                    break;
+                case "right":
+                    CalculateRight();
+                    break;
                 case "asc":
                     CalculateAsc();
                     break;
@@ -1333,6 +1334,7 @@ namespace X.IO.Arithmetic
                 iph.li_params.Sort();
                 iph.li_params.Reverse();
                 var _iterator = 0;
+                PushRippleIfNeeded(iph.li_params.Count);
                 foreach (var item in iph.li_params)
                 {
                     _opStack.PushAt(iph.NextTuplePush - _iterator, item);
@@ -1350,6 +1352,8 @@ namespace X.IO.Arithmetic
 
                 iph.li_params.Sort();
                 var _iterator = 0;
+                PushRippleIfNeeded(iph.li_params.Count);
+               
                 foreach (var item in iph.li_params)
                 {
                     _opStack.PushAt(iph.NextTuplePush - _iterator, item);
@@ -1361,6 +1365,7 @@ namespace X.IO.Arithmetic
         {
             if (iph.li_paramsLoc.Count() == 1)
             {
+                //PushRippleIfNeeded(iph.li_params.Count); // probably should do this here instead of in pushseq
                 var _value = iph.li_params[0];
                 PushSeq(iph.NextTuplePush, Convert.ToInt32(_value));
             }
@@ -1369,6 +1374,7 @@ namespace X.IO.Arithmetic
         {
             if (iph.li_paramsLoc.Count() == 1)
             {
+                PushRippleIfNeeded(iph.li_params.Count);
                 PushDistinct(iph.NextTuplePush, iph.li_params);
             }
         }
@@ -1385,18 +1391,44 @@ namespace X.IO.Arithmetic
                 running_list.Add(total);
             }
             running_list.Reverse();
+            PushRippleIfNeeded(running_list.Count);
             PushListToStack(running_list);
         }
 
         #endregion
 
         #region function_input_type_MultiParam
+        // SINGLE-VALUE OUTPUTS
+        private void CalculateRound()
+        {
+            if (iph.li_paramsLoc.Count() == 2)
+            {
+                var round_param2 = ReturnParameter(2)[0];
+                var round_param1 = ReturnParameter(1)[0];
+
+                var _value = Math.Round(round_param1, Convert.ToInt32(round_param2));
+                _opStack.PushAt(iph.NextTuplePush, _value);
+            }
+        }
+        private void CalculatePower()
+        {
+            if (iph.li_paramsLoc.Count() == 2)
+            {
+                var power_param2 = ReturnParameter(2)[0];
+                var power_param1 = ReturnParameter(1)[0];
+                var _value = Math.Pow(power_param1, power_param2);
+                _opStack.PushAt(iph.NextTuplePush, _value);
+            }
+        }
+        
+        // MULTI-VALUE OUTPUTS
         private void CalculateProduct()
         {
             if (iph.li_paramsLoc.Count() == 2)
             {
                 var param1 = ReturnParameter(1);
                 var param2 = ReturnParameter(2);
+                PushRippleIfNeeded(param1.Count);
                 PushProduct(param1, param2, iph.NextTuplePush);
             }
         }
@@ -1412,10 +1444,12 @@ namespace X.IO.Arithmetic
             {
                 if (_iif_expr_lhs[0] == _iif_expr_rhs[0])
                 {
+                    PushRippleIfNeeded(_iif_T.Count);
                     PushListToStack(_iif_T);
                 }
                 else
                 {
+                    PushRippleIfNeeded(_iif_F.Count);
                     PushListToStack(_iif_F);
                 }
             }
@@ -1424,10 +1458,12 @@ namespace X.IO.Arithmetic
             {
                 if (_iif_expr_lhs[0] < _iif_expr_rhs[0])
                 {
+                    PushRippleIfNeeded(_iif_T.Count);
                     PushListToStack(_iif_T);
                 }
                 else
                 {
+                    PushRippleIfNeeded(_iif_F.Count);
                     PushListToStack(_iif_F);
                 }
             }
@@ -1436,47 +1472,30 @@ namespace X.IO.Arithmetic
             {
                 if (_iif_expr_lhs[0] > _iif_expr_rhs[0])
                 {
+                    PushRippleIfNeeded(_iif_T.Count);
                     PushListToStack(_iif_T);
                 }
                 else
                 {
+                    PushRippleIfNeeded(_iif_F.Count);
                     PushListToStack(_iif_F);
                 }
             }
 
 
-        }
-        private void CalculateRound()
-        {
-            if (iph.li_paramsLoc.Count() == 2)
-            {
-                var round_param2 = ReturnParameter(2)[0];
-                var round_param1 = ReturnParameter(1)[0];
-                
-                var _value = Math.Round(round_param1, Convert.ToInt32(round_param2));
-                _opStack.PushAt(iph.NextTuplePush, _value);
-            }
-        }
-        private void CalculatePower()
-        {
-            if (iph.li_paramsLoc.Count() == 2)
-            {
-                var power_param2 = ReturnParameter(2)[0];
-                var power_param1 = ReturnParameter(1)[0];
-                var _value = Math.Pow(power_param1, power_param2);
-                _opStack.PushAt(iph.NextTuplePush, _value);
-            }
-        }
+        }     
         private void CalculateLeft()
         {
             var _param1 = ReturnParameter(1);
             var _param2 = ReturnParameter(2)[0];
+            PushRippleIfNeeded(_param1.Count);// we give this more room thn needed. is that ok?
             PushTrim(_param1, iph.NextTuplePush, Convert.ToInt32(_param2), "left");
         }
         private void CalculateRight()
         {
             var _param1 = ReturnParameter(1);
             var _param2 = ReturnParameter(2)[0];
+            PushRippleIfNeeded(_param1.Count);
             PushTrim(_param1, iph.NextTuplePush, Convert.ToInt32(_param2), "right");
         }
         private void CalculateTake()
@@ -1484,7 +1503,7 @@ namespace X.IO.Arithmetic
             var _param1 = ReturnParameter(1);
             var _param2 = Convert.ToInt32(ReturnParameter(2)[0]);
             var _param3 = Convert.ToInt32(ReturnParameter(3)[0]);
-           
+            PushRippleIfNeeded(_param1.Count);
             PushTake(iph.NextTuplePush, _param1, _param2, _param3);
         }
         #endregion
@@ -1511,6 +1530,25 @@ namespace X.IO.Arithmetic
 
 
         #region Special Functions
+
+        public bool PushRippleIfNeeded(int space_needed)
+        {
+            var index = iph.NextTuplePush;//
+            var split = _opStack.PeekSearchKeyPreviousSlow(index);
+            var space_avail = index - split;
+
+            if (space_avail < space_needed)
+            {
+                _opStack.PushRipple(iph.NextTuplePush, space_needed);
+                iph.NextTuplePush += space_needed;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public void PushProduct(List<double> _params1, List<double> _params2, int index)
         {
             // need to add a check for param1 & param2 being same count
@@ -1551,7 +1589,8 @@ namespace X.IO.Arithmetic
 
         public void PushSeq( int index, int stopPoint)
         {
-
+            //PushRippleIfNeeded(iph.li_params.Count);
+            // manually run push ripple from here
             _opStack.PushRipple(index, stopPoint);
 
             stopPoint = stopPoint +1;
