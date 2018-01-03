@@ -119,7 +119,7 @@ namespace Test
 
 
 
-            // ALL ITEMS BELOW FIXED IN {1.0.1-beta}
+            // ALL ITEMS BELOW FIXED IN {1.0.2-beta}
             ArithmeticEvaluator("index(desc([column]),5);", "1", _externalData, true);
             ArithmeticEvaluator("max(seq(1))", "1", null, true);
             ArithmeticEvaluator("max(seq(4))", "4", null, true);
