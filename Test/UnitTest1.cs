@@ -37,8 +37,10 @@ namespace Test
             _externalData.Add("column", new List<double> {  1, 2, 3, 4, 5 });
 
 
-          //  ArithmeticEvaluator("--(-6+2)", "-4", null, true);
 
+
+            
+            
             #region  function_input_type_SingleParam
 
 
@@ -89,10 +91,6 @@ namespace Test
             #endregion
 
 
-            //ArithmeticEvaluator("multiply(1|4|3|2)", "", true);
-            //ArithmeticEvaluator("divide(1|4|3|2)", "", true);
-            //ArithmeticEvaluator("avg(1|4|3|2)", "", true);
-            //ArithmeticEvaluator("frac(1|4|3|2)", "", true);
             #endregion
 
 
@@ -116,6 +114,25 @@ namespace Test
             ArithmeticEvaluator("(2 + A)+// 1", "", null, true);
             //ArithmeticEvaluator("?", "", null, true);
             ArithmeticEvaluator("/", "", null, true);
+
+
+
+
+
+            // ALL ITEMS BELOW FIXED IN {1.0.1-beta}
+            ArithmeticEvaluator("index(desc([column]),5);", "1", _externalData, true);
+            ArithmeticEvaluator("max(seq(1))", "1", null, true);
+            ArithmeticEvaluator("max(seq(4))", "4", null, true);
+            ArithmeticEvaluator("$t56", "", null, true);
+            ArithmeticEvaluator("function(9)", "", null, true);
+            ArithmeticEvaluator("(2+3+3)+w", "8", null, true);
+
+
+
+
+
+
+
         }
 
 

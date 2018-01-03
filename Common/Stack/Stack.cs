@@ -147,7 +147,7 @@ namespace X.IO.Common.Stack
                 }
                 
 
-            } while (next >= min);
+            } while (next >= min && next != -1);
 
             #endregion
 
@@ -215,20 +215,47 @@ namespace X.IO.Common.Stack
 
         public int PeekSearchKeyPrevious(int key)
         {
-            this.Order();
-            int _last_key_Searched = -1;
-            foreach (var _key in _stack.Keys)
+            // Phasing this out for the function below
+            return PeekSearchKeyPreviousSlow(key);
+            //this.Order();
+            //int _last_key_Searched = -1;
+            //foreach (var _key in _stack.Keys)
+            //{
+
+            //    if (_key == key)
+            //    {
+            //        return _last_key_Searched;
+            //    }
+            //    _last_key_Searched = _key;
+
+            //}
+
+            //return -1;
+        }
+
+        public int PeekSearchKeyPreviousSlow(int key)
+        {
+            // this METHOD (as opposed to PeekSearchKeyPrevious) has to search the entire list but will
+            // return a value even if the supplied key doesn't exist in the dictionary
+            var returnVal = -1;
+            if (this.Count() > 0)
             {
-
-                if (_key == key)
+                this.Order();
+                int _last_key_Searched = -1;
+                
+                foreach (var _key in _stack.Keys)
                 {
-                    return _last_key_Searched;
-                }
-                _last_key_Searched = _key;
 
+                    if (_key < key)
+                    {
+                        returnVal = _key;
+                    }
+                    _last_key_Searched = _key;
+
+                }
             }
 
-            return -1;
+            return returnVal;
         }
 
         public dynamic PeekBottom()

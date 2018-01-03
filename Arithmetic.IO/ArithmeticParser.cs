@@ -157,7 +157,7 @@ namespace X.IO.Arithmetic
                 if (( _parameter_sequence==null && _ident_rhs != null ) || (_parameter_sequence != null && _ident_rhs != null) || _minus != null)// however, if we are missing a parameter we must have a closing ) to fill out a paramless function or we may have a leading minus as in --(-6+2)
                 _self = new function_parameter(_minus, _ident_lhs, _parameter_sequence, _ident_rhs);
             }
-            else
+            else if(_ident_lhs != null && _ident_rhs != null)
             {
                 _self = new function_parameter(_minus, _ident_lhs, null, _ident_rhs);
             }
@@ -199,7 +199,9 @@ namespace X.IO.Arithmetic
             var _word = new WordParser(_tokens, ref _index);
             if (_word.word != null)
             {
-                _self = new function(_word.word);
+                var _fn = new function(_word.word);
+                if(_fn.word != null)
+                _self = _fn;
             }
 
              return _self;
