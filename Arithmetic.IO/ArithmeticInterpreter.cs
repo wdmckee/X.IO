@@ -937,6 +937,12 @@ namespace X.IO.Arithmetic
                 case "runningtotal":
                     CalculateRunningTotal();                    
                     break;
+                case "view":
+                    CalculateView();
+                    break;
+                case "combine":
+                    CalculateCombine();
+                    break;
 
                 #endregion
 
@@ -1484,6 +1490,30 @@ namespace X.IO.Arithmetic
 
             }
         }
+        private void CalculateView()
+        {
+            // TAKE SEQUENCES HERE, ERRORS ARE CAUGHT UPSTREAM
+            if (iph.li_paramsLoc.Count() == 1)
+            {
+
+
+                var _iterator = 0;
+                PushRippleIfNeeded(iph.li_params.Count);
+                foreach (var item in iph.li_params)
+                {
+                    _opStack.PushAt(iph.NextTuplePush - _iterator, item);
+                    _iterator++;
+                }
+            }
+            else
+            {
+                _opStack.Clear();
+                _opStack.Push("ERROR:1002");
+                IsError = true;
+
+            }
+
+        }
 
         #endregion
 
@@ -1659,6 +1689,30 @@ namespace X.IO.Arithmetic
 
             }
         }
+        private void CalculateCombine()
+        {
+            // TAKE SEQUENCES HERE, ERRORS ARE CAUGHT UPSTREAM
+            if (iph.li_paramsLoc.Count() > 0)
+            {
+
+
+                var _iterator = 0;
+                PushRippleIfNeeded(iph.li_params.Count);
+                foreach (var item in iph.li_params)
+                {
+                    _opStack.PushAt(iph.NextTuplePush - _iterator, item);
+                    _iterator++;
+                }
+            }
+            else
+            {
+                _opStack.Clear();
+                _opStack.Push("ERROR:1002");
+                IsError = true;
+
+            }
+        }
+
         #endregion
 
         #region function_input_type_Paramless

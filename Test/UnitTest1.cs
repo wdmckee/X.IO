@@ -63,6 +63,7 @@ namespace Test
             ArithmeticEvaluator("power(2,3)", "8", null, true);
             ArithmeticEvaluator("index(4|4|5|6|1,6)", "4", null, true);
             ArithmeticEvaluator("index([column],5)", "5", _externalData, true);
+            ArithmeticEvaluator("combine([column],[column])", "{1|2|3|4|5|1|2|3|4|5}", _externalData, true);
             // PARAMLESS
             ArithmeticEvaluator("pi()", "3.14159265358979", null, true);
             ArithmeticEvaluator("e()", "2.71828182845905", null, true);
@@ -70,6 +71,7 @@ namespace Test
 
             #region function_output_type_MultiValue
             // SINGLE-PARAM
+            ArithmeticEvaluator("view([column])", "{1|2|3|4|5}", _externalData, true);
             ArithmeticEvaluator("asc(1|4|3|2)", "{1|2|3|4}", null, true);
             ArithmeticEvaluator("asc(1|4|3|2,3)", "ERROR:1001", null, true);
             ArithmeticEvaluator("desc(1|4|3|2)", "{4|3|2|1}", null, true);
@@ -132,6 +134,8 @@ namespace Test
             ArithmeticEvaluator("(9=)", "", null, true);
             ArithmeticEvaluator("take([column_not_exists],<,sum([column])-12)", "ERROR:1003", _externalData, true);
 
+            // ALL ITEMS BELOW FIXED IN {1.1.0-beta}
+            ArithmeticEvaluator("sum([a])", "ERROR:1003", null, true);
         }
 
 

@@ -210,7 +210,16 @@ namespace Arithmetic.IO.Helpers
                 }
                 else if (_value is string && _value != "|" && _value != ",") // CHECKING FOR AN EXTERNAL ARRAY REFERENCE
                 {
-                    li_params.AddRange(_externalData[_value]);// DO ERROR HANDLE HERE
+                    if (_externalData.ContainsKey(_value))
+                    { li_params.AddRange(_externalData[_value]); }
+                    else
+                    {
+                        _opStack.Clear();
+                        _opStack.Push("ERROR:1003");
+                        isError = true;
+                        return;
+                    }
+
                     var index = _opStack.PeekSearchKeyPrevious(_next_value_location); // GET THE NEXT INDEX LOCATION
                     _opStack.PopAt(_next_value_location);//REMOVE DOUBLE VALUE FROM STACK
                     _next_value_location = index; //RESET TO INDEX

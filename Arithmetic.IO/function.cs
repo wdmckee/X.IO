@@ -60,7 +60,8 @@ namespace X.IO.Arithmetic
                 || _exp == "mode"
                 || _exp == "parameter"  //
                 || _exp == "foreach"
-
+                || _exp == "view"  //
+                || _exp == "combine"
 
                 || extern_fn.ReturnFunctionName(_exp) ==true
                 // ADD FUNCTION
