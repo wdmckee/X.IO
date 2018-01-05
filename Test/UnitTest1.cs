@@ -46,7 +46,7 @@ namespace Test
 
             #region function_output_type_SingleValue
             // SINGLE-PARAM
-            ArithmeticEvaluator("abs(1|4|3|2)", "ERROR:1000", null, true);
+            ArithmeticEvaluator("abs(1|4|3|2)", "ERROR:1002", null, true);
             ArithmeticEvaluator("abs(1|4|3|2,6)", "ERROR:1001", null, true);
             ArithmeticEvaluator("abs(-4)", "4", null, true);     
             ArithmeticEvaluator("sin(4)", "0.0697564737441253", null, true);
@@ -100,7 +100,7 @@ namespace Test
             ArithmeticEvaluator("take(1|2|3|10000|11000,>,-1*round(1/6*(tan(sin(-6+2))*cos(.25))+log(10)-exp(7)+8.88E-11-100.0,4))", "{10000|11000}", null, true);
 
             ArithmeticEvaluator("take([column],<,sum([column]))", "{1|2|3|4|5}", _externalData, true);
-            ArithmeticEvaluator("take([column],<,sum([column])-12)", "{1|2}", _externalData, true);
+            ArithmeticEvaluator("take([column],<,sum([column])-12)", "{1|2}", _externalData, true);            
             ArithmeticEvaluator("iif(1+2,<,5,1,0)+iif(1+2,<,5,1,0)", "2", null, true);
 
 
@@ -114,8 +114,7 @@ namespace Test
             ArithmeticEvaluator("(2 + A)+// 1", "", null, true);
             //ArithmeticEvaluator("?", "", null, true);
             ArithmeticEvaluator("/", "", null, true);
-
-
+            
 
 
 
@@ -126,12 +125,12 @@ namespace Test
             ArithmeticEvaluator("$t56", "", null, true);
             ArithmeticEvaluator("function(9)", "", null, true);
             ArithmeticEvaluator("(2+3+3)+w", "8", null, true);
+            
 
-
-
-
-
-
+            // ALL ITEMS BELOW FIXED IN {1.0.3-beta}
+            ArithmeticEvaluator("round(pi())", "ERROR:1002", null, true);
+            ArithmeticEvaluator("(9=)", "", null, true);
+            ArithmeticEvaluator("take([column_not_exists],<,sum([column])-12)", "ERROR:1003", _externalData, true);
 
         }
 

@@ -262,7 +262,16 @@ namespace Arithmetic.IO.Helpers
                         if (_value == -99) // CHECKING FOR AN EXTERNAL ARRAY REFERENCE WHICH IS CODED -99
                         {
                             _value = _opStack.PeekValueAt(_next_value_location);
-                            li_params.AddRange(_externalData[_value]); // ADD RANGE SINCE WE MAY ALREADY HAVE PARAMS IN THE LIST
+                            if (_externalData.ContainsKey(_value))
+                            { li_params.AddRange(_externalData[_value]); }
+                            else
+                            {
+                                _opStack.Clear();
+                                _opStack.Push("ERROR:1003");
+                                isError = true;
+                                return;
+                            }
+                            // ADD RANGE SINCE WE MAY ALREADY HAVE PARAMS IN THE LIST
                         }
                         else
                         {

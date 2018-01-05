@@ -37,6 +37,7 @@ namespace X.IO.Arithmetic
             i.Result(p.result);
             p.result.value = i.ActionList[0].event_data;
 
+            if(i.IsError){p.result.IsError = true;}
 
             return p.result;
                 
