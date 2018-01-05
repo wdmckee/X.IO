@@ -174,6 +174,7 @@ namespace X.IO.Arithmetic.Helpers
             function_input_type_SingleParam.Add("distinct");
             function_input_type_SingleParam.Add("desc");
             function_input_type_SingleParam.Add("runningtotal");
+            function_input_type_SingleParam.Add("view");
         }
 
         private void LoadMultiParamInput()
@@ -188,6 +189,7 @@ namespace X.IO.Arithmetic.Helpers
             function_input_type_MultiParam.Add("mod");
             function_input_type_MultiParam.Add("iif");
             function_input_type_MultiParam.Add("findindex");
+            function_input_type_MultiParam.Add("combine");
         }
         
         private void LoadParamlessInput()
@@ -261,6 +263,8 @@ namespace X.IO.Arithmetic.Helpers
             function_output_type_MultiValue.Add("frequency");
             function_output_type_MultiValue.Add("foreach");
             function_output_type_MultiValue.Add("parameter");
+            function_output_type_MultiValue.Add("view");
+            function_output_type_MultiValue.Add("combine");
         }
 
 
