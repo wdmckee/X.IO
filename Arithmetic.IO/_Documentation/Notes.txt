@@ -64,6 +64,7 @@ comma
 ERROR:1000 | looks like you tried to feed a parameter sequence (array) to a function that only accepts a single number as a parameter | scope:interpreter.calculations
 ERROR:1001 | only number sequences (arrays) are allowed in this context	| scope:interpreter.evaluations
 ERROR:1002 | not correct number of params	| scope:interpreter.calculations
+ERROR:1003 | variable not found	| scope:interpreter.evaluations
 
 
 

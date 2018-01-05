@@ -17,7 +17,7 @@ namespace X.IO.Arithmetic
 
         public Dictionary<string, List<double>> _externalData = new Dictionary<string, List<double>>();
         public List<Arithmetic_ActionData> ActionList = new List<Arithmetic_ActionData>();
-
+        public bool IsError = false;
 
 
         OpStack _opStack = new OpStack();
@@ -25,7 +25,7 @@ namespace X.IO.Arithmetic
         OpStack _resultStack = new OpStack();
         //Functions extern_fn = new Functions();
         InterpreterPropertyHelper iph;
-        bool isError = false;
+        
 
         string expression;
 
@@ -789,7 +789,7 @@ namespace X.IO.Arithmetic
             // note the peekbottom function now references the top of the stack since its actually looking for the last added which was pushed to the top
             //Console.WriteLine("{0} {1} {2} {3} = {4}", "step: ", iph._number_1, iph._current_operation, iph._number_2, _opStack.PeekBottom()); // our answer
 
-            if (_opStack.Count() > 1 && iph.operation_done_last_round && !isError)
+            if (_opStack.Count() > 1 && iph.operation_done_last_round && !IsError)
                 goto again;
 
 
@@ -1129,8 +1129,8 @@ namespace X.IO.Arithmetic
             else
             {                
                 _opStack.Clear();
-                _opStack.Push("ERROR:1000");
-                isError = true;
+                _opStack.Push("ERROR:1002");
+                IsError = true;
                 //throw new Exception(string.Format("looks like you tried to feed a parameter sequence (array) to a function that only accepts a single number as a parameter"));
             }
 
@@ -1146,8 +1146,8 @@ namespace X.IO.Arithmetic
             else
             {
                 _opStack.Clear();
-                _opStack.Push("ERROR:1000");
-                isError = true;
+                _opStack.Push("ERROR:1002");
+                IsError = true;
                 //throw new Exception(string.Format("looks like you tried to feed a parameter sequence (array) to a function that only accepts a single number as a parameter"));
             }
 
@@ -1163,8 +1163,8 @@ namespace X.IO.Arithmetic
             else
             {
                 _opStack.Clear();
-                _opStack.Push("ERROR:1000");
-                isError = true;
+                _opStack.Push("ERROR:1002");
+                IsError = true;
                 //throw new Exception(string.Format("looks like you tried to feed a parameter sequence (array) to a function that only accepts a single number as a parameter"));
             }
 
@@ -1180,8 +1180,8 @@ namespace X.IO.Arithmetic
             else
             {
                 _opStack.Clear();
-                _opStack.Push("ERROR:1000");
-                isError = true;
+                _opStack.Push("ERROR:1002");
+                IsError = true;
                 //throw new Exception(string.Format("looks like you tried to feed a parameter sequence (array) to a function that only accepts a single number as a parameter"));
             }
 
@@ -1197,8 +1197,8 @@ namespace X.IO.Arithmetic
             else
             {
                 _opStack.Clear();
-                _opStack.Push("ERROR:1000");
-                isError = true;
+                _opStack.Push("ERROR:1002");
+                IsError = true;
                 //throw new Exception(string.Format("looks like you tried to feed a parameter sequence (array) to a function that only accepts a single number as a parameter"));
             }
 
@@ -1214,8 +1214,8 @@ namespace X.IO.Arithmetic
             else
             {
                 _opStack.Clear();
-                _opStack.Push("ERROR:1000");
-                isError = true;
+                _opStack.Push("ERROR:1002");
+                IsError = true;
                 //throw new Exception(string.Format("looks like you tried to feed a parameter sequence (array) to a function that only accepts a single number as a parameter"));
             }
             
@@ -1231,8 +1231,8 @@ namespace X.IO.Arithmetic
             else
             {
                 _opStack.Clear();
-                _opStack.Push("ERROR:1000");
-                isError = true;
+                _opStack.Push("ERROR:1002");
+                IsError = true;
                 //throw new Exception(string.Format("looks like you tried to feed a parameter sequence (array) to a function that only accepts a single number as a parameter"));
             }
 
@@ -1259,8 +1259,8 @@ namespace X.IO.Arithmetic
             else
             {
                 _opStack.Clear();
-                _opStack.Push("ERROR:1000");
-                isError = true;
+                _opStack.Push("ERROR:1002");
+                IsError = true;
                 //throw new Exception(string.Format("looks like you tried to feed a parameter sequence (array) to a function that only accepts a single number as a parameter"));
             }
 
@@ -1273,14 +1273,31 @@ namespace X.IO.Arithmetic
                 var param2 = ReturnParameter(2)[0];
                 _opStack.PushAt(iph.NextTuplePush, param1 % param2);
             }
+            else
+            {
+                _opStack.Clear();
+                _opStack.Push("ERROR:1002");
+                IsError = true;
+
+            }
         }
         private void CalculateIndex()
         {
-            var _param1 = ReturnParameter(1);
-            var _param2 = ReturnParameter(2);
-            _param1.Reverse();
-            var _value = _param1.FindIndex(x => x == _param2[0]) +1;           
-            _opStack.PushAt(iph.NextTuplePush, _value);
+            if (iph.li_paramsLoc.Count() == 2)
+            {
+                var _param1 = ReturnParameter(1);
+                var _param2 = ReturnParameter(2);
+                _param1.Reverse();
+                var _value = _param1.FindIndex(x => x == _param2[0]) + 1;
+                _opStack.PushAt(iph.NextTuplePush, _value);
+            }
+            else
+            {
+                _opStack.Clear();
+                _opStack.Push("ERROR:1002");
+                IsError = true;
+
+            }
 
         }
         private void CalculateMax()
@@ -1290,6 +1307,13 @@ namespace X.IO.Arithmetic
                 var _value = GetCumulative(iph.li_params, "max");
                 _opStack.PushAt(iph.NextTuplePush, _value);
             }
+            else
+            {
+                _opStack.Clear();
+                _opStack.Push("ERROR:1002");
+                IsError = true;
+
+            }
         }
         private void CalculateMin()
         {
@@ -1297,6 +1321,13 @@ namespace X.IO.Arithmetic
             {
                 var _value = GetCumulative(iph.li_params, "min");
                 _opStack.PushAt(iph.NextTuplePush, _value);
+            }
+            else
+            {
+                _opStack.Clear();
+                _opStack.Push("ERROR:1002");
+                IsError = true;
+
             }
         }
         private void CalculateCount()
@@ -1306,6 +1337,13 @@ namespace X.IO.Arithmetic
                 var _value = GetCumulative(iph.li_params, "count");
                 _opStack.PushAt(iph.NextTuplePush, _value);
             }
+            else
+            {
+                _opStack.Clear();
+                _opStack.Push("ERROR:1002");
+                IsError = true;
+
+            }
         }
         private void CalculateSum()
         {
@@ -1314,6 +1352,13 @@ namespace X.IO.Arithmetic
                 var _value = GetCumulative(iph.li_params, "+");
                 _opStack.PushAt(iph.NextTuplePush, _value);
             }
+            else
+            {
+                _opStack.Clear();
+                _opStack.Push("ERROR:1002");
+                IsError = true;
+
+            }
         }
         private void CalculateAvg()
         {
@@ -1321,6 +1366,13 @@ namespace X.IO.Arithmetic
             {
                 var _value = GetCumulative(iph.li_params, "+") / GetCumulative(iph.li_params, "count");
                 _opStack.PushAt(iph.NextTuplePush, _value);
+            }
+            else
+            {
+                _opStack.Clear();
+                _opStack.Push("ERROR:1002");
+                IsError = true;
+
             }
         }
 
@@ -1341,6 +1393,13 @@ namespace X.IO.Arithmetic
                     _iterator++;
                 }
             }
+            else
+            {
+                _opStack.Clear();
+                _opStack.Push("ERROR:1002");
+                IsError = true;
+
+            }
 
 
         }
@@ -1360,6 +1419,13 @@ namespace X.IO.Arithmetic
                     _iterator++;
                 }
             }
+            else
+            {
+                _opStack.Clear();
+                _opStack.Push("ERROR:1002");
+                IsError = true;
+
+            }
         }
         private void CalculateSeq()
         {
@@ -1369,6 +1435,13 @@ namespace X.IO.Arithmetic
                 var _value = iph.li_params[0];
                 PushSeq(iph.NextTuplePush, Convert.ToInt32(_value));
             }
+            else
+            {
+                _opStack.Clear();
+                _opStack.Push("ERROR:1002");
+                IsError = true;
+
+            }
         }
         private void CalculateDistinct()
         {
@@ -1377,22 +1450,39 @@ namespace X.IO.Arithmetic
                 PushRippleIfNeeded(iph.li_params.Count);
                 PushDistinct(iph.NextTuplePush, iph.li_params);
             }
+            else
+            {
+                _opStack.Clear();
+                _opStack.Push("ERROR:1002");
+                IsError = true;
+
+            }
         }
         private void CalculateRunningTotal()
         {
-            var _runningsum_data = ReturnParameter(1);
-            _runningsum_data.Reverse();
-            List<double> running_list = new List<double>();
-
-            double total = 0;
-            foreach (var item in _runningsum_data)
+            if (iph.li_paramsLoc.Count() == 1)
             {
-                total += item;
-                running_list.Add(total);
+                var _runningsum_data = ReturnParameter(1);
+                _runningsum_data.Reverse();
+                List<double> running_list = new List<double>();
+
+                double total = 0;
+                foreach (var item in _runningsum_data)
+                {
+                    total += item;
+                    running_list.Add(total);
+                }
+                running_list.Reverse();
+                PushRippleIfNeeded(running_list.Count);
+                PushListToStack(running_list);
             }
-            running_list.Reverse();
-            PushRippleIfNeeded(running_list.Count);
-            PushListToStack(running_list);
+            else
+            {
+                _opStack.Clear();
+                _opStack.Push("ERROR:1002");
+                IsError = true;
+
+            }
         }
 
         #endregion
@@ -1409,6 +1499,13 @@ namespace X.IO.Arithmetic
                 var _value = Math.Round(round_param1, Convert.ToInt32(round_param2));
                 _opStack.PushAt(iph.NextTuplePush, _value);
             }
+            else
+            {
+                _opStack.Clear();
+                _opStack.Push("ERROR:1002");
+                IsError = true;
+
+            }
         }
         private void CalculatePower()
         {
@@ -1418,6 +1515,13 @@ namespace X.IO.Arithmetic
                 var power_param1 = ReturnParameter(1)[0];
                 var _value = Math.Pow(power_param1, power_param2);
                 _opStack.PushAt(iph.NextTuplePush, _value);
+            }
+            else
+            {
+                _opStack.Clear();
+                _opStack.Push("ERROR:1002");
+                IsError = true;
+
             }
         }
         
@@ -1431,80 +1535,129 @@ namespace X.IO.Arithmetic
                 PushRippleIfNeeded(param1.Count);
                 PushProduct(param1, param2, iph.NextTuplePush);
             }
+            else
+            {
+                _opStack.Clear();
+                _opStack.Push("ERROR:1002");
+                IsError = true;
+
+            }
         }
         private void CalculateIIF()
         {
-            var _iif_expr_lhs = ReturnParameter(1);
-            var _iif_op = ReturnParameter(2);
-            var _iif_expr_rhs = ReturnParameter(3);
-            var _iif_T = ReturnParameter(4);
-            var _iif_F = ReturnParameter(5);
 
-            if (Convert.ToInt32(_iif_op[0]) == 0)//=
+            if (iph.li_paramsLoc.Count() == 5)
             {
-                if (_iif_expr_lhs[0] == _iif_expr_rhs[0])
-                {
-                    PushRippleIfNeeded(_iif_T.Count);
-                    PushListToStack(_iif_T);
-                }
-                else
-                {
-                    PushRippleIfNeeded(_iif_F.Count);
-                    PushListToStack(_iif_F);
-                }
-            }
 
-            if (Convert.ToInt32(_iif_op[0]) == -1)//<
+                var _iif_expr_lhs = ReturnParameter(1);
+                var _iif_op = ReturnParameter(2);
+                var _iif_expr_rhs = ReturnParameter(3);
+                var _iif_T = ReturnParameter(4);
+                var _iif_F = ReturnParameter(5);
+
+                if (Convert.ToInt32(_iif_op[0]) == 0)//=
+                {
+                    if (_iif_expr_lhs[0] == _iif_expr_rhs[0])
+                    {
+                        PushRippleIfNeeded(_iif_T.Count);
+                        PushListToStack(_iif_T);
+                    }
+                    else
+                    {
+                        PushRippleIfNeeded(_iif_F.Count);
+                        PushListToStack(_iif_F);
+                    }
+                }
+
+                if (Convert.ToInt32(_iif_op[0]) == -1)//<
+                {
+                    if (_iif_expr_lhs[0] < _iif_expr_rhs[0])
+                    {
+                        PushRippleIfNeeded(_iif_T.Count);
+                        PushListToStack(_iif_T);
+                    }
+                    else
+                    {
+                        PushRippleIfNeeded(_iif_F.Count);
+                        PushListToStack(_iif_F);
+                    }
+                }
+
+                if (Convert.ToInt32(_iif_op[0]) == 1)//>
+                {
+                    if (_iif_expr_lhs[0] > _iif_expr_rhs[0])
+                    {
+                        PushRippleIfNeeded(_iif_T.Count);
+                        PushListToStack(_iif_T);
+                    }
+                    else
+                    {
+                        PushRippleIfNeeded(_iif_F.Count);
+                        PushListToStack(_iif_F);
+                    }
+                }
+
+            }
+            else
             {
-                if (_iif_expr_lhs[0] < _iif_expr_rhs[0])
-                {
-                    PushRippleIfNeeded(_iif_T.Count);
-                    PushListToStack(_iif_T);
-                }
-                else
-                {
-                    PushRippleIfNeeded(_iif_F.Count);
-                    PushListToStack(_iif_F);
-                }
-            }
+                _opStack.Clear();
+                _opStack.Push("ERROR:1002");
+                IsError = true;
 
-            if (Convert.ToInt32(_iif_op[0]) == 1)//>
-            {
-                if (_iif_expr_lhs[0] > _iif_expr_rhs[0])
-                {
-                    PushRippleIfNeeded(_iif_T.Count);
-                    PushListToStack(_iif_T);
-                }
-                else
-                {
-                    PushRippleIfNeeded(_iif_F.Count);
-                    PushListToStack(_iif_F);
-                }
             }
-
 
         }     
         private void CalculateLeft()
         {
-            var _param1 = ReturnParameter(1);
-            var _param2 = ReturnParameter(2)[0];
-            PushRippleIfNeeded(_param1.Count);// we give this more room thn needed. is that ok?
-            PushTrim(_param1, iph.NextTuplePush, Convert.ToInt32(_param2), "left");
+            if (iph.li_paramsLoc.Count() == 2)
+            {
+                var _param1 = ReturnParameter(1);
+                var _param2 = ReturnParameter(2)[0];
+                PushRippleIfNeeded(_param1.Count);// we give this more room thn needed. is that ok?
+                PushTrim(_param1, iph.NextTuplePush, Convert.ToInt32(_param2), "left");
+            }
+            else
+            {
+                _opStack.Clear();
+                _opStack.Push("ERROR:1002");
+                IsError = true;
+
+            }
         }
         private void CalculateRight()
         {
-            var _param1 = ReturnParameter(1);
-            var _param2 = ReturnParameter(2)[0];
-            PushRippleIfNeeded(_param1.Count);
-            PushTrim(_param1, iph.NextTuplePush, Convert.ToInt32(_param2), "right");
+            if (iph.li_paramsLoc.Count() == 2)
+            {
+                var _param1 = ReturnParameter(1);
+                var _param2 = ReturnParameter(2)[0];
+                PushRippleIfNeeded(_param1.Count);
+                PushTrim(_param1, iph.NextTuplePush, Convert.ToInt32(_param2), "right");
+            }
+            else
+            {
+                _opStack.Clear();
+                _opStack.Push("ERROR:1002");
+                IsError = true;
+
+            }
         }
         private void CalculateTake()
         {
-            var _param1 = ReturnParameter(1);
-            var _param2 = Convert.ToInt32(ReturnParameter(2)[0]);
-            var _param3 = Convert.ToInt32(ReturnParameter(3)[0]);
-            PushRippleIfNeeded(_param1.Count);
-            PushTake(iph.NextTuplePush, _param1, _param2, _param3);
+            if (iph.li_paramsLoc.Count() == 3)
+            {
+                var _param1 = ReturnParameter(1);
+                var _param2 = Convert.ToInt32(ReturnParameter(2)[0]);
+                var _param3 = Convert.ToInt32(ReturnParameter(3)[0]);
+                PushRippleIfNeeded(_param1.Count);
+                PushTake(iph.NextTuplePush, _param1, _param2, _param3);
+            }
+            else
+            {
+                _opStack.Clear();
+                _opStack.Push("ERROR:1002");
+                IsError = true;
+
+            }
         }
         #endregion
 
@@ -1515,12 +1668,26 @@ namespace X.IO.Arithmetic
             {                
                 _opStack.PushAt(iph.NextTuplePush, Math.PI);
             }
+            else
+            {
+                _opStack.Clear();
+                _opStack.Push("ERROR:1002");
+                IsError = true;
+
+            }
         }
         private void CalculateEuler()
         {
             if (iph.li_params.Count() == 0)
             {
                 _opStack.PushAt(iph.NextTuplePush, Math.E);
+            }
+            else
+            {
+                _opStack.Clear();
+                _opStack.Push("ERROR:1002");
+                IsError = true;
+
             }
         }
 
