@@ -45,7 +45,7 @@
     <Compile Include="Number\exponent.cs" />
     <Compile Include="Number\floating-point-constant.cs" />
     <Compile Include="Number\fractional-constant.cs" />
-    <Compile Include="Number\integer_constant.cs" />
+    <Compile Include="Number\integer-constant.cs" />
     <Compile Include="Number\number.cs" />
     <Compile Include="Number\NumberParser.cs" />
     <Compile Include="Number\sign.cs" />
