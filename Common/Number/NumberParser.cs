@@ -44,7 +44,7 @@ namespace X.IO.Common.Number
             List<sign> __sign = new List<sign>();
             var _sign = Parse_sign();
             while (_sign != null) { __sign.Add(_sign); _sign = Parse_sign(); }
-            _sign = new sign(__sign);
+            _sign = new sign(__sign, _index);
             //var _sign = Parse_sign();
 
             var _backtrackindex_2 = _index;
@@ -231,7 +231,7 @@ namespace X.IO.Common.Number
                 "+" | "-" */
 
             var _data = _tokens[_index];
-            var _result = new sign(_data);
+            var _result = new sign(_data, _index);
 
 
 
@@ -257,7 +257,7 @@ namespace X.IO.Common.Number
 
 
             var _data = _tokens[_index];
-            var _result = new digit(_data);
+            var _result = new digit(_data, _index);
 
 
 

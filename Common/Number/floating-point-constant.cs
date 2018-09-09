@@ -14,6 +14,8 @@ namespace X.IO.Common.Number
 
     public class floating_point_constant
     {
+        public int begin_index { get; }
+        public int end_index { get; }
         public string expression { get; }
         public fractional_constant fractional_constant { get; set; }
         public exponent exponent { get; set; }
@@ -25,6 +27,8 @@ namespace X.IO.Common.Number
             fractional_constant = _fractional_constant;
             exponent = _exponent;
             expression = fractional_constant.expression + exponent?.expression;
+            begin_index = fractional_constant.begin_index;
+            end_index = exponent == null ? fractional_constant.end_index : exponent.end_index;
 
         }
 
@@ -33,6 +37,8 @@ namespace X.IO.Common.Number
             digit_sequence = _digit_sequence;
             exponent = _exponent;
             expression =  digit_sequence.expression + exponent?.expression;
+            begin_index = digit_sequence.begin_index;
+            end_index = exponent == null ? digit_sequence.end_index : exponent.end_index;
 
         }
 

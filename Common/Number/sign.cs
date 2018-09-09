@@ -10,16 +10,18 @@ namespace X.IO.Common.Number
 {
     public class sign
     {
+        public int index { get; }
         public string expression { get; set; }// only place we allow a SET on an expression
         public bool is_sign { get; }
         public SpecialToken token { get; set; }
-        public sign(SpecialToken data)
+        public sign(SpecialToken data, int _index)
         {
             if (data.StringValue == "-" || data.StringValue == "+")
             {
                 token = data;
                 is_sign = true;
                 expression = data.StringValue;
+                index = _index;
             }
             else
             {
@@ -29,8 +31,8 @@ namespace X.IO.Common.Number
 
 
         // THIS SECTION IS KIND OF CHEATING. I SHOULD DO THIS IN A BNF SEQUENCE.
-        // GO BACK AND REDO THIS !!!!
-        public sign(List<sign> _sign_sequnce)
+        // GO BACK AND REDO THIS !!!! - INDEX GETS AFFECTED BY THIS WEIRDITY AS WELL
+        public sign(List<sign> _sign_sequnce, int _index)
         {
             sign current = null;
             sign prev = null;
@@ -61,11 +63,11 @@ namespace X.IO.Common.Number
                          || (prev.token.StringValue == "+" && current.token.StringValue == "+")
                         )
                     {
-                        current = new sign(new SpecialToken('+'));
+                        current = new sign(new SpecialToken('+'), index);
                     }
                     else
                     {
-                        current = new sign(new SpecialToken('-'));
+                        current = new sign(new SpecialToken('-'), index);
                     }
                     
                 }

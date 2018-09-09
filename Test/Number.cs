@@ -20,6 +20,7 @@ namespace Test
         [TestMethod]
         public void NumberParser()
         {
+            evaluator.NumberExpression("7789654", "7789654"); // large integer-constant
             evaluator.NumberExpression("77", "77"); // integer-constant
             evaluator.NumberExpression("-77", "-77"); // negative integer
             evaluator.NumberExpression("+77", "+77"); // positive integer
@@ -27,7 +28,7 @@ namespace Test
             evaluator.NumberExpression("8.88", "8.88"); // decimal
             evaluator.NumberExpression(".99", ".99"); // decimal no leading number
             evaluator.NumberExpression("8.88E-11", "8.88E-11"); //exponent
-            evaluator.NumberExpression(".99.88", ".99");
+            evaluator.NumberExpression(".99.88", ".99"); //greedy read
 
 
 

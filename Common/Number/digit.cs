@@ -10,11 +10,11 @@ namespace X.IO.Common.Number
 {
     public class digit
     {
-
+        public int index { get; }
         public string expression { get; }
         public bool is_digit { get; }        
         public SpecialToken token { get; set; }
-        public digit(dynamic data)
+        public digit(dynamic data, int _index)
         {
             if    (data.Value.Equals('0')
                 || data.Value.Equals('1')
@@ -31,6 +31,7 @@ namespace X.IO.Common.Number
                 is_digit = true;
                 token = data;
                 expression = data.StringValue;
+                index = _index;
             }
             else
             {
