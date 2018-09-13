@@ -489,7 +489,7 @@ namespace X.IO.Arithmetic
 
 
             var _data = _tokens[_index];
-            var _result = new comma(_data);
+            var _result = new comma(_data, _index);
 
 
             if (_result.is_comma)
