@@ -10,11 +10,11 @@ namespace X.IO.Common.Word
     public class letter
     {
 
-
+        public int index { get; }
         public string expression { get; }
         public bool is_letter { get; }
         public SpecialToken token { get; set; }
-        public letter(SpecialToken data)
+        public letter(SpecialToken data, int _index)
         {
             if (data.StringValue.Equals("a")
                || data.StringValue.Equals("b")
@@ -78,6 +78,7 @@ namespace X.IO.Common.Word
                 is_letter = true;
                 token = data;
                 expression = data.StringValue;
+                index = _index;
             }
             else
             {

@@ -87,7 +87,7 @@ namespace X.IO.Common.Word
 
 
             var _data = _tokens[_index];
-            var _result = new letter(_data);
+            var _result = new letter(_data, _index);
 
 
 
